@@ -83,9 +83,13 @@ export const PlasmicOtpCodeForm__VariantProps = new Array<VariantPropType>();
 
 export type PlasmicOtpCodeForm__ArgsType = {
   cell?: string;
+  nextStepTrigger?: (otp: string) => void;
 };
 type ArgPropType = keyof PlasmicOtpCodeForm__ArgsType;
-export const PlasmicOtpCodeForm__ArgProps = new Array<ArgPropType>("cell");
+export const PlasmicOtpCodeForm__ArgProps = new Array<ArgPropType>(
+  "cell",
+  "nextStepTrigger"
+);
 
 export type PlasmicOtpCodeForm__OverridesType = {
   root?: Flex__<"div">;
@@ -96,6 +100,7 @@ export type PlasmicOtpCodeForm__OverridesType = {
 
 export interface DefaultOtpCodeFormProps {
   cell?: string;
+  nextStepTrigger?: (otp: string) => void;
   className?: string;
 }
 
@@ -300,6 +305,39 @@ function PlasmicOtpCodeForm__RenderFunc(props: {
             $steps["updateCellInputValue"] = await $steps[
               "updateCellInputValue"
             ];
+          }
+
+          $steps["runNextStepTrigger"] = true
+            ? (() => {
+                const actionArgs = {
+                  eventRef: $props["nextStepTrigger"],
+                  args: [
+                    (() => {
+                      try {
+                        return $state.otpInput.value;
+                      } catch (e) {
+                        if (
+                          e instanceof TypeError ||
+                          e?.plasmicType === "PlasmicUndefinedDataError"
+                        ) {
+                          return undefined;
+                        }
+                        throw e;
+                      }
+                    })()
+                  ]
+                };
+                return (({ eventRef, args }) => {
+                  return eventRef?.(...(args ?? []));
+                })?.apply(null, [actionArgs]);
+              })()
+            : undefined;
+          if (
+            $steps["runNextStepTrigger"] != null &&
+            typeof $steps["runNextStepTrigger"] === "object" &&
+            typeof $steps["runNextStepTrigger"].then === "function"
+          ) {
+            $steps["runNextStepTrigger"] = await $steps["runNextStepTrigger"];
           }
         }}
       />

@@ -83,7 +83,7 @@ export const PlasmicMobileNumberForm__VariantProps =
   new Array<VariantPropType>();
 
 export type PlasmicMobileNumberForm__ArgsType = {
-  nextStepTrigger?: (cell: string) => void;
+  nextStepTrigger?: (cell: string, countryCode: string) => void;
 };
 type ArgPropType = keyof PlasmicMobileNumberForm__ArgsType;
 export const PlasmicMobileNumberForm__ArgProps = new Array<ArgPropType>(
@@ -97,7 +97,7 @@ export type PlasmicMobileNumberForm__OverridesType = {
 };
 
 export interface DefaultMobileNumberFormProps {
-  nextStepTrigger?: (cell: string) => void;
+  nextStepTrigger?: (cell: string, countryCode: string) => void;
   className?: string;
 }
 
@@ -254,6 +254,19 @@ function PlasmicMobileNumberForm__RenderFunc(props: {
                     (() => {
                       try {
                         return $state.cellInput.value;
+                      } catch (e) {
+                        if (
+                          e instanceof TypeError ||
+                          e?.plasmicType === "PlasmicUndefinedDataError"
+                        ) {
+                          return undefined;
+                        }
+                        throw e;
+                      }
+                    })(),
+                    (() => {
+                      try {
+                        return $state.select.value;
                       } catch (e) {
                         if (
                           e instanceof TypeError ||

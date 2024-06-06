@@ -118,6 +118,8 @@ function PlasmicLoginForm__RenderFunc(props: {
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
 
+  const $globalActions = useGlobalActions?.();
+
   const currentUser = useCurrentUser?.() || {};
 
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
@@ -130,6 +132,12 @@ function PlasmicLoginForm__RenderFunc(props: {
       },
       {
         path: "phone",
+        type: "private",
+        variableType: "text",
+        initFunc: ({ $props, $state, $queries, $ctx }) => ""
+      },
+      {
+        path: "countryCode",
         type: "private",
         variableType: "text",
         initFunc: ({ $props, $state, $queries, $ctx }) => ""
@@ -180,8 +188,104 @@ function PlasmicLoginForm__RenderFunc(props: {
           data-plasmic-name={"mobileNumberForm"}
           data-plasmic-override={overrides.mobileNumberForm}
           className={classNames("__wab_instance", sty.mobileNumberForm)}
-          nextStepTrigger={async cell => {
+          nextStepTrigger={async (cell, country_code) => {
             const $steps = {};
+
+            $steps["updatePhone"] = true
+              ? (() => {
+                  const actionArgs = {
+                    variable: {
+                      objRoot: $state,
+                      variablePath: ["phone"]
+                    },
+                    operation: 0,
+                    value: cell.replace(/^0+/, "")
+                  };
+                  return (({ variable, value, startIndex, deleteCount }) => {
+                    if (!variable) {
+                      return;
+                    }
+                    const { objRoot, variablePath } = variable;
+
+                    $stateSet(objRoot, variablePath, value);
+                    return value;
+                  })?.apply(null, [actionArgs]);
+                })()
+              : undefined;
+            if (
+              $steps["updatePhone"] != null &&
+              typeof $steps["updatePhone"] === "object" &&
+              typeof $steps["updatePhone"].then === "function"
+            ) {
+              $steps["updatePhone"] = await $steps["updatePhone"];
+            }
+
+            $steps["updateCountryCode"] = true
+              ? (() => {
+                  const actionArgs = {
+                    variable: {
+                      objRoot: $state,
+                      variablePath: ["countryCode"]
+                    },
+                    operation: 0,
+                    value: country_code
+                  };
+                  return (({ variable, value, startIndex, deleteCount }) => {
+                    if (!variable) {
+                      return;
+                    }
+                    const { objRoot, variablePath } = variable;
+
+                    $stateSet(objRoot, variablePath, value);
+                    return value;
+                  })?.apply(null, [actionArgs]);
+                })()
+              : undefined;
+            if (
+              $steps["updateCountryCode"] != null &&
+              typeof $steps["updateCountryCode"] === "object" &&
+              typeof $steps["updateCountryCode"].then === "function"
+            ) {
+              $steps["updateCountryCode"] = await $steps["updateCountryCode"];
+            }
+
+            $steps["invokeGlobalAction"] = true
+              ? (() => {
+                  const actionArgs = {
+                    args: [
+                      "POST",
+                      "https://apigw.paziresh24.com/v1/auth/send-otp",
+                      undefined,
+                      (() => {
+                        try {
+                          return {
+                            phone: $state.phone,
+                            country_code: $state.countryCode
+                          };
+                        } catch (e) {
+                          if (
+                            e instanceof TypeError ||
+                            e?.plasmicType === "PlasmicUndefinedDataError"
+                          ) {
+                            return undefined;
+                          }
+                          throw e;
+                        }
+                      })()
+                    ]
+                  };
+                  return $globalActions["Fragment.apiRequest"]?.apply(null, [
+                    ...actionArgs.args
+                  ]);
+                })()
+              : undefined;
+            if (
+              $steps["invokeGlobalAction"] != null &&
+              typeof $steps["invokeGlobalAction"] === "object" &&
+              typeof $steps["invokeGlobalAction"].then === "function"
+            ) {
+              $steps["invokeGlobalAction"] = await $steps["invokeGlobalAction"];
+            }
 
             $steps["updateCurrentStep"] = true
               ? (() => {
@@ -210,35 +314,6 @@ function PlasmicLoginForm__RenderFunc(props: {
               typeof $steps["updateCurrentStep"].then === "function"
             ) {
               $steps["updateCurrentStep"] = await $steps["updateCurrentStep"];
-            }
-
-            $steps["updateCurrentStep2"] = true
-              ? (() => {
-                  const actionArgs = {
-                    variable: {
-                      objRoot: $state,
-                      variablePath: ["phone"]
-                    },
-                    operation: 0,
-                    value: cell
-                  };
-                  return (({ variable, value, startIndex, deleteCount }) => {
-                    if (!variable) {
-                      return;
-                    }
-                    const { objRoot, variablePath } = variable;
-
-                    $stateSet(objRoot, variablePath, value);
-                    return value;
-                  })?.apply(null, [actionArgs]);
-                })()
-              : undefined;
-            if (
-              $steps["updateCurrentStep2"] != null &&
-              typeof $steps["updateCurrentStep2"] === "object" &&
-              typeof $steps["updateCurrentStep2"].then === "function"
-            ) {
-              $steps["updateCurrentStep2"] = await $steps["updateCurrentStep2"];
             }
           }}
         />
@@ -273,6 +348,102 @@ function PlasmicLoginForm__RenderFunc(props: {
             }
           })()}
           className={classNames("__wab_instance", sty.otpCodeForm)}
+          nextStepTrigger={async otp => {
+            const $steps = {};
+
+            $steps["invokeGlobalAction"] = true
+              ? (() => {
+                  const actionArgs = {
+                    args: [
+                      "POST",
+                      "https://apigw.paziresh24.com/v1/auth/check-otp",
+                      undefined,
+                      (() => {
+                        try {
+                          return {
+                            phone: $state.phone,
+                            country_code: $state.countryCode,
+                            otp: otp
+                          };
+                        } catch (e) {
+                          if (
+                            e instanceof TypeError ||
+                            e?.plasmicType === "PlasmicUndefinedDataError"
+                          ) {
+                            return undefined;
+                          }
+                          throw e;
+                        }
+                      })()
+                    ]
+                  };
+                  return $globalActions["Fragment.apiRequest"]?.apply(null, [
+                    ...actionArgs.args
+                  ]);
+                })()
+              : undefined;
+            if (
+              $steps["invokeGlobalAction"] != null &&
+              typeof $steps["invokeGlobalAction"] === "object" &&
+              typeof $steps["invokeGlobalAction"].then === "function"
+            ) {
+              $steps["invokeGlobalAction"] = await $steps["invokeGlobalAction"];
+            }
+
+            $steps["goToHttpswwwpaziresh24Com"] =
+              $steps.invokeGlobalAction.status != 500
+                ? (() => {
+                    const actionArgs = {
+                      destination: "https://www.paziresh24.com"
+                    };
+                    return (({ destination }) => {
+                      if (
+                        typeof destination === "string" &&
+                        destination.startsWith("#")
+                      ) {
+                        document
+                          .getElementById(destination.substr(1))
+                          .scrollIntoView({ behavior: "smooth" });
+                      } else {
+                        __nextRouter?.push(destination);
+                      }
+                    })?.apply(null, [actionArgs]);
+                  })()
+                : undefined;
+            if (
+              $steps["goToHttpswwwpaziresh24Com"] != null &&
+              typeof $steps["goToHttpswwwpaziresh24Com"] === "object" &&
+              typeof $steps["goToHttpswwwpaziresh24Com"].then === "function"
+            ) {
+              $steps["goToHttpswwwpaziresh24Com"] = await $steps[
+                "goToHttpswwwpaziresh24Com"
+              ];
+            }
+
+            $steps["invokeGlobalAction2"] =
+              $steps.invokeGlobalAction.status == 500
+                ? (() => {
+                    const actionArgs = {
+                      args: [
+                        "error",
+                        "\u06a9\u062f \u062a\u0627\u0626\u06cc\u062f \u0648\u0627\u0631\u062f \u0634\u062f\u0647 \u0627\u0634\u062a\u0628\u0627\u0647 \u0627\u0633\u062a."
+                      ]
+                    };
+                    return $globalActions["Fragment.showToast"]?.apply(null, [
+                      ...actionArgs.args
+                    ]);
+                  })()
+                : undefined;
+            if (
+              $steps["invokeGlobalAction2"] != null &&
+              typeof $steps["invokeGlobalAction2"] === "object" &&
+              typeof $steps["invokeGlobalAction2"].then === "function"
+            ) {
+              $steps["invokeGlobalAction2"] = await $steps[
+                "invokeGlobalAction2"
+              ];
+            }
+          }}
         />
       ) : null}
     </Stack__>
