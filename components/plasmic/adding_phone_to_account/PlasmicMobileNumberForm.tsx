@@ -94,6 +94,7 @@ export type PlasmicMobileNumberForm__OverridesType = {
   root?: Flex__<"div">;
   cellInput?: Flex__<typeof TextInput>;
   select?: Flex__<typeof Select>;
+  button?: Flex__<typeof Button>;
 };
 
 export interface DefaultMobileNumberFormProps {
@@ -129,8 +130,6 @@ function PlasmicMobileNumberForm__RenderFunc(props: {
   const $ctx = useDataEnv?.() || {};
   const refsRef = React.useRef({});
   const $refs = refsRef.current;
-
-  const currentUser = useCurrentUser?.() || {};
 
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
@@ -241,8 +240,10 @@ function PlasmicMobileNumberForm__RenderFunc(props: {
         {"\u0645\u062b\u0627\u0644:*******0912"}
       </div>
       <Button
+        data-plasmic-name={"button"}
+        data-plasmic-override={overrides.button}
         children2={"\u062a\u0627\u06cc\u06cc\u062f"}
-        className={classNames("__wab_instance", sty.button__yT3UM)}
+        className={classNames("__wab_instance", sty.button)}
         onClick={async event => {
           const $steps = {};
 
@@ -293,36 +294,15 @@ function PlasmicMobileNumberForm__RenderFunc(props: {
           }
         }}
       />
-
-      <Button
-        children2={
-          "\u0648\u0631\u0648\u062f \u0628\u0627 \u062f\u0648\u0644\u062a \u0627\u0644\u06a9\u062a\u0631\u0648\u0646\u06cc\u06a9"
-        }
-        className={classNames("__wab_instance", sty.button__dyKuu)}
-        link={(() => {
-          try {
-            return `
-https://auth.paziresh24.com/oauth/login?redirect_url=https://nobat.tums.ac.ir/login?redirect_url=${window.location.href}`;
-          } catch (e) {
-            if (
-              e instanceof TypeError ||
-              e?.plasmicType === "PlasmicUndefinedDataError"
-            ) {
-              return "";
-            }
-            throw e;
-          }
-        })()}
-        outline={true}
-      />
     </Stack__>
   ) as React.ReactElement | null;
 }
 
 const PlasmicDescendants = {
-  root: ["root", "cellInput", "select"],
+  root: ["root", "cellInput", "select", "button"],
   cellInput: ["cellInput"],
-  select: ["select"]
+  select: ["select"],
+  button: ["button"]
 } as const;
 type NodeNameType = keyof typeof PlasmicDescendants;
 type DescendantsType<T extends NodeNameType> =
@@ -331,6 +311,7 @@ type NodeDefaultElementType = {
   root: "div";
   cellInput: typeof TextInput;
   select: typeof Select;
+  button: typeof Button;
 };
 
 type ReservedPropsType = "variants" | "args" | "overrides";
@@ -395,6 +376,7 @@ export const PlasmicMobileNumberForm = Object.assign(
     // Helper components rendering sub-elements
     cellInput: makeNodeComponent("cellInput"),
     select: makeNodeComponent("select"),
+    button: makeNodeComponent("button"),
 
     // Metadata about props expected for PlasmicMobileNumberForm
     internalVariantProps: PlasmicMobileNumberForm__VariantProps,

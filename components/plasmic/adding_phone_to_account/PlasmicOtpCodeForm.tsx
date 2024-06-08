@@ -135,8 +135,6 @@ function PlasmicOtpCodeForm__RenderFunc(props: {
 
   const $globalActions = useGlobalActions?.();
 
-  const currentUser = useCurrentUser?.() || {};
-
   const stateSpecs: Parameters<typeof useDollarState>[0] = React.useMemo(
     () => [
       {
