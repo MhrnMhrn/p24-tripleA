@@ -223,7 +223,7 @@ function PlasmicMobileNumberForm__RenderFunc(props: {
             ];
             __composite["0"]["value"] = "25";
             __composite["0"]["label"] = "+98";
-            __composite["1"]["value"] = "12";
+            __composite["1"]["value"] = "+1";
             __composite["1"]["label"] = "+1";
             return __composite;
           })()}
