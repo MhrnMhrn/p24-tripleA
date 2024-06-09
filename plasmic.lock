@@ -308,7 +308,7 @@
         },
         {
           "assetId": "7jvdQemeVhQeLCrYcMBTUF",
-          "checksum": "1d403a163cff970cda164c6fd52492e5",
+          "checksum": "067e7aa0d70677367e581740c8f70736",
           "type": "globalContexts"
         },
         {
@@ -424,7 +424,7 @@
         {
           "assetId": "7jvdQemeVhQeLCrYcMBTUF",
           "type": "projectCss",
-          "checksum": "0b1664545c8096306bc685054e0902b5"
+          "checksum": "1e793816438030fca7b8fc9ececf35c7"
         }
       ],
       "codegenVersion": "0.0.1"
